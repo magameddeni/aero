@@ -10,14 +10,15 @@ services:
       - "${APP_PORT:-3000}:3000"
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      DB_HOST: ${DB_HOST:-mysql}
+      DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_USER: "${DB_USER}"
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_HOST: ${REDIS_HOST}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      IS_DOCKER: "TRUE"
     depends_on:
       - mysql
       - redis

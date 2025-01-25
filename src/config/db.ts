@@ -1,12 +1,22 @@
-import { Pool } from "mysql2/promise"
+import { Pool, PoolOptions } from "mysql2/promise"
 import { getConfig } from "../lib/config"
 
-export const DB_CONFIG = {
-  host: getConfig("DB_HOST"),
-  user: getConfig("DB_USER"),
-  password: getConfig("MYSQL_ROOT_PASSWORD"),
-  database: getConfig("MYSQL_DATABASE"),
-  // port: Number(getConfig("DB_PORT")),
+export const getDBConfig = () => {
+  const config: PoolOptions = {
+    host: getConfig("DB_HOST"),
+    user: getConfig("DB_USER"),
+    password: getConfig("MYSQL_ROOT_PASSWORD"),
+    database: getConfig("MYSQL_DATABASE"),
+    port: Number(getConfig("DB_PORT")),
+  }
+
+  if (process.env.IS_DOCKER) {
+    delete config.port
+    config["host"] = "mysql"
+    process.env.REDIS_HOST = "redis"
+  }
+
+  return config
 }
 
 const requests = [

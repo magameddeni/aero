@@ -1,4 +1,4 @@
-import express, { NextFunction, Response, Errback } from "express"
+import express from "express"
 import config from "dotenv"
 config.config()
 import cors from "cors"
@@ -6,9 +6,8 @@ import Cookie from "cookie-parser"
 import userRouter from "./user/user.router"
 import fileRouter from "./file/file.router"
 import mysql, { Pool } from "mysql2/promise"
-import { createTable, DB_CONFIG } from "./config"
+import { createTable, getDBConfig } from "./config"
 import { errorHandler, errorLogger } from "./lib"
-import { IRequest } from "./interface"
 
 export class App {
   private app: express.Express
@@ -18,10 +17,10 @@ export class App {
   constructor() {
     this.app = express()
     this.port = process.env.APP_PORT || 3000
-    this.connection = mysql.createPool(DB_CONFIG)
+    this.connection = mysql.createPool(getDBConfig())
   }
 
-  useListen() {
+  private useListen() {
     this.app.listen(this.port, async () => {
       console.log(
         `[server]: Server is running at http://localhost:${this.port}`,
@@ -33,7 +32,7 @@ export class App {
     return this.connection
   }
 
-  useHandlers() {
+  private useHandlers() {
     this.app.use(cors())
     this.app.use(Cookie())
     this.app.use(express.json())
@@ -42,7 +41,7 @@ export class App {
     this.app.use("/file", fileRouter)
   }
 
-  useExectionFilter() {
+  private useExectionFilter() {
     this.app.use(errorLogger)
     this.app.use(errorHandler)
   }
